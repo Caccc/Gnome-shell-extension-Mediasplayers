@@ -1,6 +1,6 @@
 ### Gnome shell extension Mediasplayers
 
-Gnome-shell-extension-mediasplayers is a simple extension for displaying player control, music and music cover in Gnome Shell.
+Gnome shell extension Mediasplayers is a simple extension for displaying player control, music and music cover in Gnome Shell.
 
 ### Screenshot
 
