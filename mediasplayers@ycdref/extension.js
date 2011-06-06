@@ -7,7 +7,7 @@
 Copyright (C) 2011,
 ycDref (Caccc) <d_dref@yahoo.fr>
 
-Part of code from j.wielicki@sotecware.net <j.wielicki@sotecware.net>
+Part of code from Jean-Philippe Braun <eon@patapon.info> , j.wielicki <j.wielicki@sotecware.net>
 
 This file is part of gnome-shell-extension-mediasplayers.
 
@@ -43,6 +43,9 @@ const PropIFace = {
     signals: [{ name: 'PropertiesChanged',
                 inSignature: 'a{sv}'}]
 }
+
+const VOLUME_ADJUSTMENT_STEP = 0.05; /* Volume adjustment step in % */
+const VOLUME_NOTIFY_ID = 1;
 
 var PLAYER_DEFAULT = "org.mpris.MediaPlayer2.banshee";
 var DEFAULT_APP ="banshee-media-player.desktop";
@@ -125,6 +128,39 @@ MediaServer2Player.prototype = {
     
     setShuffle: function(value) {
         this.SetRemote('Shuffle', value);
+    },
+    
+    getVolume: function(callback) {
+        this.GetRemote('Volume', Lang.bind(this,
+            function(volume, ex) {
+                if (!ex)
+                    callback(this, volume);
+            }));
+    },
+
+    setVolume: function(value) {
+        this.SetRemote('Volume', value);
+    },
+    
+    getRepeat: function(callback) {
+        this.GetRemote('LoopStatus', Lang.bind(this,
+            function(repeat, ex) {
+                if (!ex) {
+                    if (repeat == "None")
+                        repeat = false
+                    else
+                        repeat = true
+                    callback(this, repeat);
+                }
+            }));
+    },
+
+    setRepeat: function(value) {
+        if (value)
+            value = "Playlist"
+        else
+            value = "None"
+        this.SetRemote('LoopStatus', value);
     }
 }
 DBus.proxifyPrototype(MediaServer2Player.prototype, MediaServer2PlayerIFace)
@@ -232,6 +268,8 @@ Indicator.prototype = {
     this.menu.addMenuItem(this._togglePlayback);
     this.menu.addMenuItem(this._next);
     
+    this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+    
     this._shuffle = new PopupMenu.PopupSwitchMenuItem(_("Shuffle"), false);
     this._shuffle.connect('toggled', Lang.bind(this, function(item) {
         this._mediaServer.setShuffle(item.state);
@@ -239,12 +277,30 @@ Indicator.prototype = {
     }));
     this.menu.addMenuItem(this._shuffle);
     
+    this._repeat = new PopupMenu.PopupSwitchMenuItem(_("Repeat"), false);
+    this._repeat.connect('toggled', Lang.bind(this, function(item) {
+        this._mediaServer.setRepeat(item.state);
+        this._updateSwitches();
+    }));
+    this.menu.addMenuItem(this._repeat);
+    
+    this._volume_text = new PopupMenu.PopupImageMenuItem(_("Volume"), "audio-volume-high", { reactive: false });
+    this._volume = new PopupMenu.PopupSliderMenuItem(0);
+    this._volume.connect('value-changed', Lang.bind(this, function(item) {
+        this._mediaServer.setVolume(item._value);
+    }));
+    this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+    this.menu.addMenuItem(this._volume_text);
+    this.menu.addMenuItem(this._volume);
+    
     this._updateMetadata();
     this._updateSwitches();
-
+    this._updateVolume();
+    
     this._prop.connect('PropertiesChanged', Lang.bind(this, function(arg) {
             this._updateMetadata();
             this._updateSwitches();
+            this._updateVolume();
         }));
 
     },
@@ -279,12 +335,33 @@ Indicator.prototype = {
     },
     
     _updateSwitches: function() {
-        this._mediaServer.getShuffle(Lang.bind(this, 
+        this._mediaServer.getShuffle(Lang.bind(this,
             function(sender, shuffle) {
                 this._shuffle.setToggleState(shuffle);
             }
         ));
-    }    
+        this._mediaServer.getRepeat(Lang.bind(this,
+            function(sender, repeat) {
+                this._repeat.setToggleState(repeat);
+            }
+        ));
+    },
+    
+    _updateVolume: function() {
+        this._mediaServer.getVolume(Lang.bind(this,
+        function(sender, volume) {
+            global.log(this._volume_text);
+        this._volume_text.setIcon = "audio-volume-low";
+            if (volume > 0.30) {
+            this._volume_text.setIcon = "audio-volume-medium";
+        }
+            if (volume > 0.70) {
+            this._volume_text.setIcon = "audio-volume-high";
+        }
+            this._volume.setValue(volume);
+        }
+    ));
+    }
 };
 
 function main() {
