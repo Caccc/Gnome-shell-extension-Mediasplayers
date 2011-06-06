@@ -1,7 +1,6 @@
-### gnome-shell-extension-mediabanshee
+### Gnome-shell-extension-mediasplayers
 
-Gnome-shell-extension-mediabanshee is a simple extension for displaying player control, music and music cover in Gnome Shell.
-The code was write for Banshee but easly adaptable for other player like Rhythmbox, Clementine, Quolibet, etc, etc ...
+Gnome-shell-extension-mediasplayers is a simple extension for displaying player control, music and music cover in Gnome Shell.
 
 ### Screenshot
 
@@ -9,11 +8,11 @@ The code was write for Banshee but easly adaptable for other player like Rhythmb
 
 ### Installation
 
-1. Put directory `mediabanshee@ycdref/` in `~/.local/share/gnome-shell/extensions/`
+1. Put directory `mediasplayers@ycdref/` in `~/.local/share/gnome-shell/extensions/`
 2. Restart Gnome Shell (`[Alt]+[F2]`, `r`)
 3. Enjoy, contribute, ...
 
-Don't forgot to put on Dbus Mpris and grab couver in you Banshee preference Extensions.
+Don't forgot to put on Dbus Mpris and grab couver in you music app preference Extensions.
 
 ### Licence
 
@@ -22,11 +21,11 @@ ycDref (Caccc) d_dref@yahoo.fr <d_dref@yahoo.fr>
 
 Part of code from j.wielicki <j.wielicki@sotecware.net>
 
-This file is part of gnome-shell-extension-mediabanshee.
+This file is part of gnome-shell-extension-mediasplayers.
 
-gnome-shell-extension-mediabanshee is free software: you can redistribute it and/or modify it under the terms of the **GNU General Public License as published by the Free Software Foundation, either version 3** of the License, or (at your option) any later version.
+gnome-shell-extension-mediasplayers is free software: you can redistribute it and/or modify it under the terms of the **GNU General Public License as published by the Free Software Foundation, either version 3** of the License, or (at your option) any later version.
 
-gnome-shell-extension-weather is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+gnome-shell-extension-mediasplayers is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with gnome-shell-extension-mediabanshee.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License along with gnome-shell-extension-mediasplayers.  If not, see <http://www.gnu.org/licenses/>.
 
