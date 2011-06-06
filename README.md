@@ -5,7 +5,7 @@ The code was write for Banshee but easly adaptable for other player like Rhythmb
 
 ### Screenshot
 
-![Screenshot](https://github.com/caccc/gnome-shell-extension-mediabanshee/raw/master/screenshot.png)
+![Screenshot](https://github.com/Caccc/Gnome-shell-extension-Media-player--adapter-for-Banshee-/raw/master/screenshot.png)
 
 ### Installation
 
@@ -16,7 +16,7 @@ The code was write for Banshee but easly adaptable for other player like Rhythmb
 ### Licence
 
 Copyright (C) 2011,
-ycDref (Caccc) <d_dref@yahoo.fr>
+ycDref (Caccc) d_dref@yahoo.fr <d_dref@yahoo.fr>
 
 Part of code from j.wielicki@sotecware.net <j.wielicki@sotecware.net>
 
