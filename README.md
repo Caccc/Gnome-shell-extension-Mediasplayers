@@ -19,7 +19,7 @@ Don't forgot to put on Dbus Mpris and grab couver in you music app preference Ex
 Copyright (C) 2011,
 ycDref (Caccc) d_dref@yahoo.fr <d_dref@yahoo.fr>
 
-Part of code from j.wielicki <j.wielicki@sotecware.net>
+Part of code from Jean-Philippe Braun <eon@patapon.info> , j.wielicki <j.wielicki@sotecware.net>
 
 This file is part of gnome-shell-extension-mediasplayers.
 
