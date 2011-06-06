@@ -13,6 +13,8 @@ The code was write for Banshee but easly adaptable for other player like Rhythmb
 2. Restart Gnome Shell (`[Alt]+[F2]`, `r`)
 3. Enjoy, contribute, ...
 
+Don't forgot to put on Dbus Mpris and grab couver in you Banshee preference Extensions.
+
 ### Licence
 
 Copyright (C) 2011,
