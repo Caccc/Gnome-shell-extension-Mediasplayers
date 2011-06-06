@@ -4,7 +4,7 @@ Gnome-shell-extension-mediasplayers is a simple extension for displaying player 
 
 ### Screenshot
 
-![Screenshot](https://github.com/Caccc/Gnome-shell-extension-Media-player--adapter-for-Banshee-/raw/master/screenshot.png)
+![Screenshot](https://github.com/Caccc/Gnome-shell-extension-Mediasplayers/raw/master/screenshot.png)
 
 ### Installation
 
