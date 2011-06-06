@@ -18,7 +18,7 @@ The code was write for Banshee but easly adaptable for other player like Rhythmb
 Copyright (C) 2011,
 ycDref (Caccc) d_dref@yahoo.fr <d_dref@yahoo.fr>
 
-Part of code from j.wielicki@sotecware.net <j.wielicki@sotecware.net>
+Part of code from j.wielicki <j.wielicki@sotecware.net>
 
 This file is part of gnome-shell-extension-mediabanshee.
 
