@@ -2,20 +2,20 @@
     padding:7px;
     background-gradient-start: rgba(0,0,0,0.6);
     background-gradient-end: rgba(0,0,0,0.6);
-    border-radius: 4px;font-weight: bold;color:#cccccc
+    border-radius: 4px;
 }
 .button {
     padding:7px;
-    background-gradient-start: rgba(0,0,0,0.8);
-    background-gradient-end: rgba(0,0,0,0.8);
+	background-gradient-direction: vertical;
+    background-gradient-start: rgba(0,0,0,0.0);
+    background-gradient-end: rgba(250,250,250,0.1);
     border-radius: 4px;    
 }
 .button:hover {
     padding: 7px;
 	border-radius: 4px;
-	background-image: url("../../usr/share/gnome-shell/theme/panel-button-highlight-wide.svg");
 	background-gradient-direction: vertical;
     background-gradient-start: rgba(0,0,0,0.0);
-    background-gradient-end: rgba(0,0,0,0.0);
-    transition-duration: 100;
+    background-gradient-end: rgba(250,250,250,0.1);
+    transition-duration: 100;color:#363434
 }
