@@ -1,0 +1,7 @@
+.openApp {
+    width: 60px;
+    height: 60px;
+     background-color: #252525;
+    background-image: url("media-eject.png");
+    border-radius: 4px;
+}
