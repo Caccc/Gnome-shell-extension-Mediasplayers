@@ -197,7 +197,7 @@ Indicator.prototype = {
         this._songInformations = new St.Bin({});
         this._controlsButtons = new St.Bin({});
  
-        let mainBox = new St.BoxLayout({vertical: true});
+        let mainBox = new St.BoxLayout({vertical: true, style_class: 'back'});
         mainBox.add_actor(this._songCover);
         mainBox.add_actor(this._songInformations);
         mainBox.add_actor(this._controlsButtons);
@@ -215,10 +215,11 @@ Indicator.prototype = {
         let controlsBox = new St.BoxLayout();
 		this._controlsButtons.set_child(controlsBox);
 
-        this._openApp = new St.Button({ style_class: 'media-eject' });
+        this._openApp = new St.Button({ style_class: 'button' });
         this._openApp.connect('clicked', Lang.bind(this, this._loadPlayer));
         controlsBox.add_actor(this._openApp);
-        this._mediaPrev = new St.Button({ style_class: 'media-skip-backward' });
+        
+        this._mediaPrev = new St.Button({ style_class: 'button' });
         this._mediaPrev.connect('clicked', Lang.bind(this,  
 			function () {
 	            this._mediaServer.PreviousRemote();
@@ -227,7 +228,7 @@ Indicator.prototype = {
 	    ));        
         controlsBox.add_actor(this._mediaPrev);
 
-        this._mediaPlay = new St.Button({ style_class: 'media-playback-start' });
+        this._mediaPlay = new St.Button({ style_class: 'button' });
         this._mediaPlay.connect('clicked', Lang.bind(this, 
     	    function () {
 	            this._mediaServer.PlayPauseRemote();
@@ -236,7 +237,7 @@ Indicator.prototype = {
 	    ));
         controlsBox.add_actor(this._mediaPlay); 
         
-        this._mediaNext = new St.Button({ style_class: 'media-skip-forward' });
+        this._mediaNext = new St.Button({ style_class: 'button' });
         this._mediaNext.connect('clicked', Lang.bind(this, 
     	    function () {
 	            this._mediaServer.NextRemote();
