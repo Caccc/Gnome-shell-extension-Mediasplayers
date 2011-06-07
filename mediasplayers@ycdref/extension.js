@@ -50,6 +50,8 @@ const VOLUME_NOTIFY_ID = 1;
 var PLAYER_DEFAULT = "org.mpris.MediaPlayer2.banshee";
 var DEFAULT_APP ="banshee-media-player.desktop";
 
+var COVER_PATH="";
+
 function Prop() {
     this._init();
 }
@@ -276,36 +278,6 @@ Indicator.prototype = {
 	    this.menu.addMenuItem(this._volume_text);
 	    this.menu.addMenuItem(this._volume);
 	    
-        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-
-		this._banshee = new PopupMenu.PopupSwitchMenuItem(_("Banshee"), true);
-		this._banshee.connect('toggled', Lang.bind(this, function(item) {
-	            DEFAULT_APP = 'banshee-media-player.desktop';
-	            this._appPlayer("org.mpris.MediaPlayer2.banshee");
-	            this._rhythmbox.setToggleState(false);
-	            this._clementine.setToggleState(false);
-		}));
-		this._rhythmbox = new PopupMenu.PopupSwitchMenuItem(_("Rhythmbox"), false);
-		this._rhythmbox.connect('toggled', Lang.bind(this, function(item) {
-	            DEFAULT_APP = 'rhythmbox.desktop'; 
-	            this._appPlayer("org.mpris.MediaPlayer2.rhythmbox");
-	            this._banshee.setToggleState(false);
-	            this._clementine.setToggleState(false);
-	        }));
-	    this._clementine = new PopupMenu.PopupSwitchMenuItem(_("Clementine"), false);
-	    this._clementine.connect('toggled', Lang.bind(this, function(item) {
-			DEFAULT_APP = 'clementine.desktop';            	
-			this._appPlayer("org.mpris.MediaPlayer2.clementine");
-	        this._banshee.setToggleState(false);
-	        this._rhythmbox.setToggleState(false);
-	    }));
-	
-		this.menu.addMenuItem(this._banshee);
-		this.menu.addMenuItem(this._rhythmbox);
-		this.menu.addMenuItem(this._clementine);
-
-	    this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-	    
 	    this._shuffle = new PopupMenu.PopupSwitchMenuItem(_("Shuffle"), false);
 	    this._shuffle.connect('toggled', Lang.bind(this, function(item) {
 	        this._mediaServer.setShuffle(item.state);
@@ -319,6 +291,46 @@ Indicator.prototype = {
 	        this._updateSwitches();
 	    }));
 	    this.menu.addMenuItem(this._repeat);
+	    
+        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+
+		this._banshee = new PopupMenu.PopupSwitchMenuItem(_("Banshee"), true);
+		this._banshee.connect('toggled', Lang.bind(this, function(item) {
+	            DEFAULT_APP = 'banshee-media-player.desktop';
+	            this._appPlayer("org.mpris.MediaPlayer2.banshee");
+	            this._rhythmbox.setToggleState(false);
+	            this._clementine.setToggleState(false);
+	            this._quodlibet.setToggleState(false);
+		}));
+		this._rhythmbox = new PopupMenu.PopupSwitchMenuItem(_("Rhythmbox"), false);
+		this._rhythmbox.connect('toggled', Lang.bind(this, function(item) {
+	            DEFAULT_APP = 'rhythmbox.desktop'; 
+	            this._appPlayer("org.mpris.MediaPlayer2.rhythmbox");
+	            this._banshee.setToggleState(false);
+	            this._clementine.setToggleState(false);
+	            this._quodlibet.setToggleState(false);
+	        }));
+	    this._clementine = new PopupMenu.PopupSwitchMenuItem(_("Clementine"), false);
+	    this._clementine.connect('toggled', Lang.bind(this, function(item) {
+			DEFAULT_APP = 'clementine.desktop';            	
+			this._appPlayer("org.mpris.MediaPlayer2.clementine");
+	        this._banshee.setToggleState(false);
+	        this._rhythmbox.setToggleState(false);
+	        this._quodlibet.setToggleState(false);
+	    }));
+	    this._quodlibet = new PopupMenu.PopupSwitchMenuItem(_("Quodlibet"), false);	    
+	    this._quodlibet.connect('toggled', Lang.bind(this, function(item) {
+			DEFAULT_APP = 'quodlibet.desktop';            	
+			this._appPlayer("org.mpris.MediaPlayer2.quodlibet");
+	        this._banshee.setToggleState(false);
+	        this._rhythmbox.setToggleState(false);
+	        this._clementine.setToggleState(false);
+	    }));
+	    
+		this.menu.addMenuItem(this._banshee);
+		this.menu.addMenuItem(this._rhythmbox);
+		this.menu.addMenuItem(this._clementine);
+		this.menu.addMenuItem(this._quodlibet);
 	    
 	    this._updateMetadata();
 	    this._updateSwitches();
@@ -354,11 +366,11 @@ Indicator.prototype = {
 	    
 	    _updateMetadata: function() {
 	        this._mediaServer.getMetadata(Lang.bind(this,
-	            function(sender, metadata) {
+	            function(sender, metadata) {	        		
 					this._artist.text = metadata["xesam:artist"].toString() + ' - ' + metadata["xesam:title"].toString();
 					this._album.text = metadata["xesam:album"].toString();
 					this._createcover(metadata["mpris:artUrl"].substr(7,metadata["mpris:artUrl"].lenght));
-	            }));
+	        	}));
 	    },
 	    
 	    _updateSwitches: function() {
