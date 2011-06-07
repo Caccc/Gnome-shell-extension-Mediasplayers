@@ -366,10 +366,12 @@ Indicator.prototype = {
 	    
 	    _updateMetadata: function() {
 	        this._mediaServer.getMetadata(Lang.bind(this,
-	            function(sender, metadata) {	        		
+	            function(sender, metadata) {
+		        	if (DEFAULT_APP!="banshee-media-player.desktop") COVER_PATH=unescape(metadata["xesam:url"].substring(7,metadata["xesam:url"].lastIndexOf('/')))+ "/cover.jpg";
+	        		else COVER_PATH=metadata["mpris:artUrl"].substr(7,metadata["mpris:artUrl"].lenght);
 					this._artist.text = metadata["xesam:artist"].toString() + ' - ' + metadata["xesam:title"].toString();
 					this._album.text = metadata["xesam:album"].toString();
-					this._createcover(metadata["mpris:artUrl"].substr(7,metadata["mpris:artUrl"].lenght));
+					this._createcover(COVER_PATH);
 	        	}));
 	    },
 	    
