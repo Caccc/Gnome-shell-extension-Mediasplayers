@@ -1,7 +1,11 @@
-.openApp {
-    width: 60px;
-    height: 60px;
-     background-color: #252525;
-    background-image: url("media-eject.png");
-    border-radius: 4px;
+.button {
+    padding:7px;
+}
+.button:hover {
+    padding: 7px;
+	border-radius: 4px;
+	background-gradient-direction: vertical;
+    background-gradient-start: rgba(0,0,0,1);
+    background-gradient-end: rgba(0,0,0,1);
+    transition-duration: 100;
 }
