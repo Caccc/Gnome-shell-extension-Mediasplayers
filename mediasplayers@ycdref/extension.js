@@ -347,7 +347,7 @@ Indicator.prototype = {
 	    _createcover: function (pathToC) {
 	    	let coverA = new Clutter.Texture({
 	        	keep_aspect_ratio: true,
-	        	width: 100,
+	        	width: 150,
 	        	filename: pathToC});
 	    	this._songCover.set_child(coverA);
 	    },
