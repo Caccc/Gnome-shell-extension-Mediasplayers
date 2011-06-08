@@ -222,7 +222,7 @@ Indicator.prototype = {
         this._mediaPrev = new St.Button({ style_class: 'button' });
         this._mediaPrev.connect('clicked', Lang.bind(this,  
 			function () {
-	            this._mediaServer.PreviousRemote();
+        	if (PLAYPAUSE=1) this._mediaServer.PreviousRemote();
 	            this._updateMetadata();
 	        }
 	    ));        
@@ -233,15 +233,7 @@ Indicator.prototype = {
         	    function () {
     	            this._mediaServer.PlayPauseRemote();
     	            this._updateMetadata();
-    	            //  this._mediaPlay.getButtonState() ; ?
-    	            if (PLAYPAUSE==0) {
-    	            	PLAYPAUSE=1;
-    	            	this._mediaPlay.set_child(mediaPauseI);
-    	            }
-    	            else {
-    	            	 PLAYPAUSE=0;
-    	            	 this._mediaPlay.set_child(mediaPlayI);
-    	            }	             
+    	            this._playPause;         
     	        }
     	    ));
         controlsBox.add_actor(this._mediaPlay); 
@@ -249,7 +241,7 @@ Indicator.prototype = {
         this._mediaNext = new St.Button({ style_class: 'button' });
         this._mediaNext.connect('clicked', Lang.bind(this, 
     	    function () {
-	            this._mediaServer.NextRemote();
+        	if (PLAYPAUSE=1) this._mediaServer.NextRemote();
 	            this._updateMetadata();
 	        }
 	    ));
@@ -359,6 +351,17 @@ Indicator.prototype = {
 	
 	    },
 	  
+	    _playPause: function () {
+            if (PLAYPAUSE==0) {
+            	PLAYPAUSE=1;
+            	this._mediaPlay.set_child(mediaPauseI);
+            }
+            else {
+            	 PLAYPAUSE=0;
+            	 this._mediaPlay.set_child(mediaPlayI);
+            }
+	    },
+	    
 	    _appPlayer: function(str) {
 	        PLAYER_DEFAULT = str;
 	        this._mediaServer = new MediaServer2Player();
