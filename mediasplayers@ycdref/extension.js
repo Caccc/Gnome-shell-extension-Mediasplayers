@@ -49,7 +49,7 @@ const VOLUME_NOTIFY_ID = 1;
 
 var PLAYER_DEFAULT = "org.mpris.MediaPlayer2.banshee";
 var DEFAULT_APP ="banshee-media-player.desktop";
-
+var PLAYPAUSE=0;
 var COVER_PATH="";
 
 function Prop() {
@@ -227,14 +227,23 @@ Indicator.prototype = {
 	        }
 	    ));        
         controlsBox.add_actor(this._mediaPrev);
-
-        this._mediaPlay = new St.Button({ style_class: 'button' });
+	
+	this._mediaPlay = new St.Button({ style_class: 'button' });
         this._mediaPlay.connect('clicked', Lang.bind(this, 
-    	    function () {
-	            this._mediaServer.PlayPauseRemote();
-	            this._updateMetadata();
-	        }
-	    ));
+        	    function () {
+    	            this._mediaServer.PlayPauseRemote();
+    	            this._updateMetadata();
+    	            //  this._mediaPlay.getButtonState() ; ?
+    	            if (PLAYPAUSE==0) {
+    	            	PLAYPAUSE=1;
+    	            	this._mediaPlay.set_child(mediaPauseI);
+    	            }
+    	            else {
+    	            	 PLAYPAUSE=0;
+    	            	 this._mediaPlay.set_child(mediaPlayI);
+    	            }	             
+    	        }
+    	    ));
         controlsBox.add_actor(this._mediaPlay); 
         
         this._mediaNext = new St.Button({ style_class: 'button' });
@@ -270,6 +279,11 @@ Indicator.prototype = {
         });
         this._mediaNext.set_child(mediaNextI); 
 	    
+        let mediaPauseI = new St.Icon({
+            icon_type: St.IconType.SYMBOLIC,
+            icon_name: 'media-playback-pause'
+        });
+        
         this._volume_text = new PopupMenu.PopupImageMenuItem(_("Volume"), "audio-volume-high", { reactive: false });
 	    this._volume = new PopupMenu.PopupSliderMenuItem(0);
 	    this._volume.connect('value-changed', Lang.bind(this, function(item) {
