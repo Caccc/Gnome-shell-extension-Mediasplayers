@@ -19,7 +19,7 @@ Don't forgot to put on Dbus Mpris and grab couver in you music app preference Ex
 ### Licence
 
 Copyright (C) 2011,
-ycDref (Caccc) d_dref@yahoo.fr <d_dref@yahoo.fr>
+Freddy Cornil - ycDref (Caccc) d_dref@yahoo.fr <d_dref@yahoo.fr>
 
 Part of code from Jean-Philippe Braun <eon@patapon.info> , j.wielicki <j.wielicki@sotecware.net>
 
