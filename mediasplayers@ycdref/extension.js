@@ -47,10 +47,11 @@ const PropIFace = {
 const VOLUME_ADJUSTMENT_STEP = 0.05; /* Volume adjustment step in % */
 const VOLUME_NOTIFY_ID = 1;
 
-var PLAYER_DEFAULT = "org.mpris.MediaPlayer2.banshee";
+var PLAYER_DEFAULT = "";//"org.mpris.MediaPlayer2.banshee";
 var DEFAULT_APP ="banshee-media-player.desktop";
 var PLAYPAUSE=0;
 var COVER_PATH="";
+var SETTING_APP="";
 
 function Prop() {
     this._init();
@@ -180,7 +181,9 @@ Indicator.prototype = {
 
     _init: function() {
         
-	//this._settings = getSettings("org.gnome.shell.extensions.mediasplayers");
+	this._schema = new Gio.Settings({ schema: 'org.gnome.shell.extensions.mediasplayers' });
+	SETTING_APP = this._schema.get_string("player");
+
 
         this._pIcon = new St.Icon({
             icon_type: St.IconType.SYMBOLIC,
@@ -196,8 +199,6 @@ Indicator.prototype = {
         Main.panel._centerBox.add(this.actor, { y_fill: true });
         Main.panel._menus.addMenu(this.menu);
 
-        this._mediaServer = new MediaServer2Player();
-        this._prop = new Prop();
         
         this._songCover = new St.Bin({});
         this._songInformations = new St.Bin({});
@@ -219,7 +220,7 @@ Indicator.prototype = {
         infos.add_actor(this._album);
 
         let controlsBox = new St.BoxLayout();
-		this._controlsButtons.set_child(controlsBox);
+	this._controlsButtons.set_child(controlsBox);
 
         this._openApp = new St.Button({ style_class: 'button' });
         this._openApp.connect('clicked', Lang.bind(this, this._loadPlayer));
@@ -227,7 +228,7 @@ Indicator.prototype = {
         
         this._mediaPrev = new St.Button({ style_class: 'button' });
         this._mediaPrev.connect('clicked', Lang.bind(this,  
-			function () {
+	function () {
         		this._mediaServer.PreviousRemote();
 	            this._updateMetadata();
 	            this._mediaPlay.set_child(mediaPauseI);
@@ -316,10 +317,10 @@ Indicator.prototype = {
 	        this._updateSwitches();
 	    }));
 	    this.menu.addMenuItem(this._repeat);
-	    
+	    /*
 	    this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-		this._banshee = new PopupMenu.PopupSwitchMenuItem(_("Banshee"), true);
+		this._banshee = new PopupMenu.PopupSwitchMenuItem(_("Banshee"), false);
 		this._banshee.connect('toggled', Lang.bind(this, function(item) {
 	            DEFAULT_APP = 'banshee-media-player.desktop';
 	            this._appPlayer("org.mpris.MediaPlayer2.banshee");
@@ -355,8 +356,46 @@ Indicator.prototype = {
 		this.menu.addMenuItem(this._banshee);
 		this.menu.addMenuItem(this._rhythmbox);
 		this.menu.addMenuItem(this._clementine);
-		this.menu.addMenuItem(this._quodlibet);
+		this.menu.addMenuItem(this._quodlibet);*/
 	    
+	switch (SETTING_APP){
+           case "1":
+		DEFAULT_APP = 'banshee-media-player.desktop';
+		PLAYER_DEFAULT = "org.mpris.MediaPlayer2.banshee";
+		/*this._banshee.setToggleState(true);	            
+		this._rhythmbox.setToggleState(false);
+	        this._clementine.setToggleState(false);
+	        this._quodlibet.setToggleState(false);*/
+	   break;
+           case "2": 
+		DEFAULT_APP = 'rhythmbox.desktop';
+		PLAYER_DEFAULT = "org.mpris.MediaPlayer2.rhythmbox";
+		/*this._banshee.setToggleState(false);	            
+		this._rhythmbox.setToggleState(true);
+	        this._clementine.setToggleState(false);
+	        this._quodlibet.setToggleState(false);*/
+	   break;
+           case "3": 
+		DEFAULT_APP = 'clementine.desktop';
+		PLAYER_DEFAULT = "org.mpris.MediaPlayer2.clementine";
+		/*this._banshee.setToggleState(false);	            
+		this._rhythmbox.setToggleState(false);
+	        this._clementine.setToggleState(true);
+	        this._quodlibet.setToggleState(false);*/
+	   break;
+           case "4": 
+		DEFAULT_APP = 'quodlibet.desktop';
+		PLAYER_DEFAULT ="org.mpris.MediaPlayer2.quodlibet";
+		/*this._banshee.setToggleState(false);	            
+		this._rhythmbox.setToggleState(false);
+	        this._clementine.setToggleState(false);
+	        this._quodlibet.setToggleState(true);*/
+	   break;
+	}
+	
+	this._mediaServer = new MediaServer2Player();
+        this._prop = new Prop();
+		
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
         item = new PopupMenu.PopupMenuItem(_("MediasPlayers Settings ..."));

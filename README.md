@@ -11,6 +11,8 @@ Follow the @ycdref account on Twitter to know the Updates
 ### Installation
 
 1. Put directory `mediasplayers@ycdref/` in `~/.local/share/gnome-shell/extensions/`
+2. As Root, put the file  `mediasplayers@ycdref/org.gnome.shell.extensions.mediasplayers.gschema.xml` in `/usr/share/glib-2.0/schemas/`
+3. As Root, # glib-compile-schemas /usr/share/glib-2.0/schemas/
 2. Restart Gnome Shell (`[Alt]+[F2]`, `r`)
 3. Enjoy, contribute, ...
 
