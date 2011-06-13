@@ -3,6 +3,7 @@
 "name": "Mediasplayers",
 "description": "Medias Players Extension",
 "original-author": "d_dref@yahoo.fr",
+"path": "~/.local/share/gnome-shell/extensions/mediasplayers@ycdref",
 "shell-version": [ "3.0" ]
 }
 

@@ -18,7 +18,7 @@ gnome-shell-extension-mediasplayers is distributed in the hope that it will be u
 You should have received a copy of the GNU General Public License along with gnome-shell-extension-mediasplayers.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-
+const Gio = imports.gi.Gio;
 const Clutter = imports.gi.Clutter;
 const DBus = imports.dbus;
 const Lang = imports.lang;
@@ -54,6 +54,10 @@ var COVER_PATH="";
 
 function Prop() {
     this._init();
+}
+
+function OpenSettings() {
+    Util.spawn(["mediasplayers-settings"]);
 }
 
 Prop.prototype = {
@@ -176,6 +180,8 @@ Indicator.prototype = {
 
     _init: function() {
         
+	//this._settings = getSettings("org.gnome.shell.extensions.mediasplayers");
+
         this._pIcon = new St.Icon({
             icon_type: St.IconType.SYMBOLIC,
             icon_size: Main.panel.button.get_child().height,
@@ -311,7 +317,7 @@ Indicator.prototype = {
 	    }));
 	    this.menu.addMenuItem(this._repeat);
 	    
-        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+	    this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
 		this._banshee = new PopupMenu.PopupSwitchMenuItem(_("Banshee"), true);
 		this._banshee.connect('toggled', Lang.bind(this, function(item) {
@@ -350,6 +356,13 @@ Indicator.prototype = {
 		this.menu.addMenuItem(this._rhythmbox);
 		this.menu.addMenuItem(this._clementine);
 		this.menu.addMenuItem(this._quodlibet);
+	    
+        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+
+        item = new PopupMenu.PopupMenuItem(_("MediasPlayers Settings ..."));
+        item.connect('activate', OpenSettings);
+        this.menu.addMenuItem(item);
+	    
 	    
 	    this._updateMetadata();
 	    this._updateSwitches();
