@@ -1,0 +1,9 @@
+<schemalist>
+  <schema path="/org/gnome/shell/extensions/mediasplayers/" id="org.gnome.shell.extensions.mediasplayers"  gettext-domain="mediasplayers">
+    <key name="player" type='s'>
+      <default>'1'</default>
+      <summary>Default player</summary>
+      <description>Default player used</description>
+    </key>
+  </schema>
+</schemalist>
