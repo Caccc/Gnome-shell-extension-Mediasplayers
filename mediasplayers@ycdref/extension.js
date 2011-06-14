@@ -44,11 +44,11 @@ const PropIFace = {
                 inSignature: 'a{sv}'}]
 }
 
-const VOLUME_ADJUSTMENT_STEP = 0.05; /* Volume adjustment step in % */
+const VOLUME_ADJUSTMENT_STEP = 0.05; 
 const VOLUME_NOTIFY_ID = 1;
 
-var PLAYER_DEFAULT = "";//"org.mpris.MediaPlayer2.banshee";
-var DEFAULT_APP ="banshee-media-player.desktop";
+var PLAYER_DEFAULT = "";
+var DEFAULT_APP ="";
 var PLAYPAUSE=0;
 var COVER_PATH="";
 var SETTING_APP="";
@@ -317,79 +317,28 @@ Indicator.prototype = {
 	        this._updateSwitches();
 	    }));
 	    this.menu.addMenuItem(this._repeat);
-	    /*
-	    this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-		this._banshee = new PopupMenu.PopupSwitchMenuItem(_("Banshee"), false);
-		this._banshee.connect('toggled', Lang.bind(this, function(item) {
-	            DEFAULT_APP = 'banshee-media-player.desktop';
-	            this._appPlayer("org.mpris.MediaPlayer2.banshee");
-	            this._rhythmbox.setToggleState(false);
-	            this._clementine.setToggleState(false);
-	            this._quodlibet.setToggleState(false);
-		}));
-		this._rhythmbox = new PopupMenu.PopupSwitchMenuItem(_("Rhythmbox"), false);
-		this._rhythmbox.connect('toggled', Lang.bind(this, function(item) {
-	            DEFAULT_APP = 'rhythmbox.desktop'; 
-	            this._appPlayer("org.mpris.MediaPlayer2.rhythmbox");
-	            this._banshee.setToggleState(false);
-	            this._clementine.setToggleState(false);
-	            this._quodlibet.setToggleState(false);
-	        }));
-	    this._clementine = new PopupMenu.PopupSwitchMenuItem(_("Clementine"), false);
-	    this._clementine.connect('toggled', Lang.bind(this, function(item) {
-			DEFAULT_APP = 'clementine.desktop';            	
-			this._appPlayer("org.mpris.MediaPlayer2.clementine");
-	        this._banshee.setToggleState(false);
-	        this._rhythmbox.setToggleState(false);
-	        this._quodlibet.setToggleState(false);
-	    }));
-	    this._quodlibet = new PopupMenu.PopupSwitchMenuItem(_("Quodlibet"), false);	    
-	    this._quodlibet.connect('toggled', Lang.bind(this, function(item) {
-			DEFAULT_APP = 'quodlibet.desktop';            	
-			this._appPlayer("org.mpris.MediaPlayer2.quodlibet");
-	        this._banshee.setToggleState(false);
-	        this._rhythmbox.setToggleState(false);
-	        this._clementine.setToggleState(false);
-	    }));
-	    
-		this.menu.addMenuItem(this._banshee);
-		this.menu.addMenuItem(this._rhythmbox);
-		this.menu.addMenuItem(this._clementine);
-		this.menu.addMenuItem(this._quodlibet);*/
 	    
 	switch (SETTING_APP){
            case "1":
 		DEFAULT_APP = 'banshee-media-player.desktop';
 		PLAYER_DEFAULT = "org.mpris.MediaPlayer2.banshee";
-		/*this._banshee.setToggleState(true);	            
-		this._rhythmbox.setToggleState(false);
-	        this._clementine.setToggleState(false);
-	        this._quodlibet.setToggleState(false);*/
 	   break;
            case "2": 
 		DEFAULT_APP = 'rhythmbox.desktop';
 		PLAYER_DEFAULT = "org.mpris.MediaPlayer2.rhythmbox";
-		/*this._banshee.setToggleState(false);	            
-		this._rhythmbox.setToggleState(true);
-	        this._clementine.setToggleState(false);
-	        this._quodlibet.setToggleState(false);*/
 	   break;
            case "3": 
 		DEFAULT_APP = 'clementine.desktop';
 		PLAYER_DEFAULT = "org.mpris.MediaPlayer2.clementine";
-		/*this._banshee.setToggleState(false);	            
-		this._rhythmbox.setToggleState(false);
-	        this._clementine.setToggleState(true);
-	        this._quodlibet.setToggleState(false);*/
 	   break;
            case "4": 
 		DEFAULT_APP = 'quodlibet.desktop';
 		PLAYER_DEFAULT ="org.mpris.MediaPlayer2.quodlibet";
-		/*this._banshee.setToggleState(false);	            
-		this._rhythmbox.setToggleState(false);
-	        this._clementine.setToggleState(false);
-	        this._quodlibet.setToggleState(true);*/
+	   break;
+           case "5": 
+		DEFAULT_APP = 'audacious.desktop';
+		PLAYER_DEFAULT ="org.mpris.MediaPlayer2.audacious";
 	   break;
 	}
 	
