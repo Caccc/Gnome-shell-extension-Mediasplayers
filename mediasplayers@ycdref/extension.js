@@ -268,30 +268,35 @@ Indicator.prototype = {
 
         let openAppI = new St.Icon({
             icon_type: St.IconType.SYMBOLIC,
+	    icon_size: 48,
             icon_name: 'media-eject'
         });
         this._openApp.set_child(openAppI);      
     	
         let mediaPrevI = new St.Icon({
             icon_type: St.IconType.SYMBOLIC,
+	    icon_size: 48,
             icon_name: 'media-skip-backward'
         });
         this._mediaPrev.set_child(mediaPrevI); 
         
         let mediaPlayI = new St.Icon({
             icon_type: St.IconType.SYMBOLIC,
+	    icon_size: 48,
             icon_name: 'media-playback-start'
         });
         this._mediaPlay.set_child(mediaPlayI); 
         
         let mediaNextI = new St.Icon({
             icon_type: St.IconType.SYMBOLIC,
+	    icon_size: 48,
             icon_name: 'media-skip-forward'
         });
         this._mediaNext.set_child(mediaNextI); 
 	    
         let mediaPauseI = new St.Icon({
             icon_type: St.IconType.SYMBOLIC,
+	    icon_size: 48,
             icon_name: 'media-playback-pause'
         });
         
