@@ -2,6 +2,16 @@
 
 Gnome shell extension Mediasplayers is a simple extension for displaying player control, music and music cover in Gnome Shell.
 
+Players supported (depend of the correct MPRIS support by the players) :
+
+- Banshee (full fonctionnal)
+- Rhythmbox
+- Clementine
+- Quodlibet
+- Audacious
+- Guayadeque
+- MPD serveur (for Gnome Musique Player for example)
+
 Follow the @ycdref account on Twitter to know the Updates
 
 ### Screenshot

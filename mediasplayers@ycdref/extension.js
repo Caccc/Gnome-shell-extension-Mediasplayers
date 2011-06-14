@@ -341,6 +341,10 @@ Indicator.prototype = {
 		PLAYER_DEFAULT ="org.mpris.MediaPlayer2.audacious";
 	   break;
            case "6": 
+		DEFAULT_APP = 'guayadeque';
+		PLAYER_DEFAULT ="org.mpris.MediaPlayer2.guayadeque";
+	   break;
+           case "7": 
 		DEFAULT_APP = 'gmpc';
 		PLAYER_DEFAULT ="org.mpris.MediaPlayer2.mpd";
 	   break;

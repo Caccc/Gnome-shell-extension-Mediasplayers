@@ -32,6 +32,7 @@ class App:
         player.append_text('Clementine')
         player.append_text('Quodlibet')
 	player.append_text('Audacious')
+	player.append_text('Guayadeque')
 	player.append_text('MPD (ex : gmpc)')
         player.connect('changed', self.fct_rappel_change, settings)
         player.set_active(int(settings.get_string("player")))
