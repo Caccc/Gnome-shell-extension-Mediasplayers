@@ -321,24 +321,28 @@ Indicator.prototype = {
 	    
 	switch (SETTING_APP){
            case "1":
-		DEFAULT_APP = 'banshee-media-player.desktop';
+		DEFAULT_APP = 'banshee';
 		PLAYER_DEFAULT = "org.mpris.MediaPlayer2.banshee";
 	   break;
            case "2": 
-		DEFAULT_APP = 'rhythmbox.desktop';
+		DEFAULT_APP = 'rhythmbox';
 		PLAYER_DEFAULT = "org.mpris.MediaPlayer2.rhythmbox";
 	   break;
            case "3": 
-		DEFAULT_APP = 'clementine.desktop';
+		DEFAULT_APP = 'clementine';
 		PLAYER_DEFAULT = "org.mpris.MediaPlayer2.clementine";
 	   break;
            case "4": 
-		DEFAULT_APP = 'quodlibet.desktop';
+		DEFAULT_APP = 'quodlibet';
 		PLAYER_DEFAULT ="org.mpris.MediaPlayer2.quodlibet";
 	   break;
            case "5": 
-		DEFAULT_APP = 'audacious.desktop';
+		DEFAULT_APP = 'audacious';
 		PLAYER_DEFAULT ="org.mpris.MediaPlayer2.audacious";
+	   break;
+           case "6": 
+		DEFAULT_APP = 'gmpc';
+		PLAYER_DEFAULT ="org.mpris.MediaPlayer2.mpd";
 	   break;
 	}
 	
@@ -372,8 +376,7 @@ Indicator.prototype = {
 	
 	    _loadPlayer: function() {
 	        Main.overview.hide();
-	        let app = Shell.AppSystem.get_default().get_app(DEFAULT_APP);
-	        app.activate(-1);
+	        Util.spawn([DEFAULT_APP]);
 	    },
 	    
 	    _createcover: function (pathToC) {
