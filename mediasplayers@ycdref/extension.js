@@ -64,17 +64,12 @@ function Prop() {
     this._init();
 }
 
-function OpenSettings() {
-    Util.spawn(["mediasplayers-settings"]);
-}
-
 Prop.prototype = {
     _init: function() {
         DBus.session.proxifyObject(this, PLAYER_DEFAULT, '/org/mpris/MediaPlayer2', this);
     }
 }
 DBus.proxifyPrototype(Prop.prototype, PropIFace)
-
 
 const MediaServer2PlayerIFace = {
     name: 'org.mpris.MediaPlayer2.Player',
@@ -118,6 +113,7 @@ const MediaServer2PlayerIFace = {
 function MediaServer2Player() {
     this._init();
 }
+
 MediaServer2Player.prototype = {
     _init: function() {
         DBus.session.proxifyObject(this, PLAYER_DEFAULT, '/org/mpris/MediaPlayer2', this);
@@ -131,7 +127,15 @@ MediaServer2Player.prototype = {
                     callback(this, metadata);
             }));
     },
- 
+     
+    getPlaybackStatus: function(callback) {
+        this.GetRemote('PlaybackStatus', Lang.bind(this,
+            function(status, ex) {
+                if (!ex)
+                    callback(this, status);
+            }));
+    },
+    
     getShuffle: function(callback) {
         this.GetRemote('Shuffle', Lang.bind(this,
             function(metadata, ex) {
@@ -177,6 +181,7 @@ MediaServer2Player.prototype = {
         this.SetRemote('LoopStatus', value);
     }
 }
+
 DBus.proxifyPrototype(MediaServer2Player.prototype, MediaServer2PlayerIFace)
 
 function Indicator() {
@@ -191,256 +196,257 @@ Indicator.prototype = {
 	this._schema = new Gio.Settings({ schema: 'org.gnome.shell.extensions.mediasplayers' });
 	SETTING_APP = this._schema.get_string("player");
 
+    this._pIcon = new St.Icon({
+        icon_type: St.IconType.SYMBOLIC,
+        icon_size: Main.panel.button.get_child().height,
+        icon_name: 'audio-x-generic'
+    });
 
-        this._pIcon = new St.Icon({
-            icon_type: St.IconType.SYMBOLIC,
-            icon_size: Main.panel.button.get_child().height,
-            icon_name: 'audio-x-generic'
-        });
+    PanelMenu.Button.prototype._init.call(this,0);
 
-        PanelMenu.Button.prototype._init.call(this,0);
-
-        let tBox = new St.BoxLayout();        
-        tBox.add_actor(this._pIcon);
-        this.actor.set_child(tBox);
-        Main.panel._centerBox.add(this.actor, { y_fill: true });
-        Main.panel._menus.addMenu(this.menu);
+    let tBox = new St.BoxLayout();        
+    tBox.add_actor(this._pIcon);
+    this.actor.set_child(tBox);
+    Main.panel._centerBox.add(this.actor, { y_fill: true });
+    Main.panel._menus.addMenu(this.menu);
 
         
-        this._songCover = new St.Bin({});
-        this._songInformations = new St.Bin({});
-        this._controlsButtons = new St.Bin({});
+    this._songCover = new St.Bin({});
+    this._songInformations = new St.Bin({});
+    this._controlsButtons = new St.Bin({});
  
-        let mainBox = new St.BoxLayout({vertical: true, style_class: 'back'});
-        mainBox.add_actor(this._songCover);
-        mainBox.add_actor(this._songInformations);
-        mainBox.add_actor(this._controlsButtons);
-        
-        this.menu.addActor(mainBox);
-	
-        let infos = new St.BoxLayout({vertical: true});
-        this._songInformations.set_child(infos);
+    let mainBox = new St.BoxLayout({vertical: true, style_class: 'back'});
+    mainBox.add_actor(this._songCover);
+    mainBox.add_actor(this._songInformations);
+    mainBox.add_actor(this._controlsButtons);
+    
+    this.menu.addActor(mainBox);
 
-        this._artist = new St.Label();
-        this._album = new St.Label();
-        infos.add_actor(this._artist);
-        infos.add_actor(this._album);
+    let infos = new St.BoxLayout({vertical: true});
+    this._songInformations.set_child(infos);
 
-        let controlsBox = new St.BoxLayout();
+    this._artist = new St.Label();
+    this._album = new St.Label();
+    infos.add_actor(this._artist);
+    infos.add_actor(this._album);
+
+    let controlsBox = new St.BoxLayout();
 	this._controlsButtons.set_child(controlsBox);
-
-        this._openApp = new St.Button({ style_class: 'button' });
-        this._openApp.connect('clicked', Lang.bind(this, this._loadPlayer));
-        controlsBox.add_actor(this._openApp);
+    this._openApp = new St.Button({ style_class: 'button' });
+    this._openApp.connect('clicked', Lang.bind(this,   
+	  function () {
+	    this._loadApp(DEFAULT_APP);
+	  }	  
+	));
+    controlsBox.add_actor(this._openApp);
         
-        this._mediaPrev = new St.Button({ style_class: 'button' });
-        this._mediaPrev.connect('clicked', Lang.bind(this,  
-	function () {
-        		this._mediaServer.PreviousRemote();
-	            this._updateMetadata();
-	            this._mediaPlay.set_child(mediaPauseI);
-	            PLAYPAUSE=1;
-	        }
-	    ));        
-        controlsBox.add_actor(this._mediaPrev);
+    this._mediaPrev = new St.Button({ style_class: 'button' });
+    this._mediaPrev.connect('clicked', Lang.bind(this,  
+		function () {
+    		this._mediaServer.PreviousRemote();
+        }
+    ));        
+    controlsBox.add_actor(this._mediaPrev);
 	
 	this._mediaPlay = new St.Button({ style_class: 'button' });
-        this._mediaPlay.connect('clicked', Lang.bind(this, 
-        	    function () {
-    	            this._mediaServer.PlayPauseRemote();
-    	            this._updateMetadata();
-    	            //  this._mediaPlay.getButtonState() ; ?
-    	            if (PLAYPAUSE==0) {
-    	            	PLAYPAUSE=1;
-    	            	this._mediaPlay.set_child(mediaPauseI);
-    	            }
-    	            else {
-    	            	 PLAYPAUSE=0;
-    	            	 this._mediaPlay.set_child(mediaPlayI);
-    	            }
-    	        }
-    	    ));
-        controlsBox.add_actor(this._mediaPlay); 
-        
-        this._mediaNext = new St.Button({ style_class: 'button' });
-        this._mediaNext.connect('clicked', Lang.bind(this, 
-    	    function () {
-	            this._mediaServer.NextRemote();
-	            this._updateMetadata();
-	            this._mediaPlay.set_child(mediaPauseI);
-	            PLAYPAUSE=1;
-	        }
-	    ));
-        controlsBox.add_actor(this._mediaNext); 
+    this._mediaPlay.connect('clicked', Lang.bind(this, 
+	    function () {
+            this._mediaServer.PlayPauseRemote();
+        }
+    ));
+    controlsBox.add_actor(this._mediaPlay); 
+    
+    this._mediaNext = new St.Button({ style_class: 'button' });
+    this._mediaNext.connect('clicked', Lang.bind(this, 
+	    function () {
+            this._mediaServer.NextRemote();
+        }
+    ));
+    controlsBox.add_actor(this._mediaNext); 
 
-        let openAppI = new St.Icon({
-            icon_type: St.IconType.SYMBOLIC,
-	    icon_size: 48,
-            icon_name: 'media-eject'
-        });
-        this._openApp.set_child(openAppI);      
-    	
-        let mediaPrevI = new St.Icon({
-            icon_type: St.IconType.SYMBOLIC,
-	    icon_size: 48,
-            icon_name: 'media-skip-backward'
-        });
-        this._mediaPrev.set_child(mediaPrevI); 
-        
-        let mediaPlayI = new St.Icon({
-            icon_type: St.IconType.SYMBOLIC,
-	    icon_size: 48,
-            icon_name: 'media-playback-start'
-        });
-        this._mediaPlay.set_child(mediaPlayI); 
-        
-        let mediaNextI = new St.Icon({
-            icon_type: St.IconType.SYMBOLIC,
-	    icon_size: 48,
-            icon_name: 'media-skip-forward'
-        });
-        this._mediaNext.set_child(mediaNextI); 
-	    
-        let mediaPauseI = new St.Icon({
-            icon_type: St.IconType.SYMBOLIC,
-	    icon_size: 48,
-            icon_name: 'media-playback-pause'
-        });
-        
-        this._volume_text = new PopupMenu.PopupImageMenuItem(_("Volume"), "audio-volume-high", { reactive: false });
-	    this._volume = new PopupMenu.PopupSliderMenuItem(0);
-	    this._volume.connect('value-changed', Lang.bind(this, function(item) {
-	        this._mediaServer.setVolume(item._value);
-	    }));
+    this._openAppI = new St.Icon({
+        icon_type: St.IconType.SYMBOLIC,
+    icon_size: 48,
+        icon_name: 'media-eject'
+    });
+    this._openApp.set_child(this._openAppI);      
+	
+    this._mediaPrevI = new St.Icon({
+        icon_type: St.IconType.SYMBOLIC,
+        icon_size: 48,
+        icon_name: 'media-skip-backward'
+    });
+    this._mediaPrev.set_child(this._mediaPrevI); 
+    
+    this._mediaPlayI = new St.Icon({
+        icon_type: St.IconType.SYMBOLIC,
+        icon_size: 48,
+        icon_name: 'media-playback-start'
+    });
+    this._mediaPlay.set_child(this._mediaPlayI); 
+    
+    this._mediaNextI = new St.Icon({
+        icon_type: St.IconType.SYMBOLIC,
+        icon_size: 48,
+        icon_name: 'media-skip-forward'
+    });
+    this._mediaNext.set_child(this._mediaNextI); 
+    
+    this._mediaPauseI = new St.Icon({
+        icon_type: St.IconType.SYMBOLIC,
+        icon_size: 48,
+        icon_name: 'media-playback-pause'
+    });
+    
+    this._volume_text = new PopupMenu.PopupImageMenuItem(_("Volume"), "audio-volume-high", { reactive: false });
+    this._volume = new PopupMenu.PopupSliderMenuItem(0);
+    this._volume.connect('value-changed', Lang.bind(this, function(item) {
+        this._mediaServer.setVolume(item._value);
+    }));
 
-	    this.menu.addMenuItem(this._volume_text);
-	    this.menu.addMenuItem(this._volume);
-	    
-	    this._shuffle = new PopupMenu.PopupSwitchMenuItem(_("Shuffle"), false);
-	    this._shuffle.connect('toggled', Lang.bind(this, function(item) {
-	        this._mediaServer.setShuffle(item.state);
-	        this._updateSwitches();
-	    }));
-	    this.menu.addMenuItem(this._shuffle);
-	    
-	    this._repeat = new PopupMenu.PopupSwitchMenuItem(_("Repeat"), false);
-	    this._repeat.connect('toggled', Lang.bind(this, function(item) {
-	        this._mediaServer.setRepeat(item.state);
-	        this._updateSwitches();
-	    }));
-	    this.menu.addMenuItem(this._repeat);
+    this.menu.addMenuItem(this._volume_text);
+    this.menu.addMenuItem(this._volume);
+    
+    this._shuffle = new PopupMenu.PopupSwitchMenuItem(_("Shuffle"), false);
+    this._shuffle.connect('toggled', Lang.bind(this, function(item) {
+        this._mediaServer.setShuffle(item.state);
+        this._updateSwitches();
+    }));
+    this.menu.addMenuItem(this._shuffle);
+    
+    this._repeat = new PopupMenu.PopupSwitchMenuItem(_("Repeat"), false);
+    this._repeat.connect('toggled', Lang.bind(this, function(item) {
+        this._mediaServer.setRepeat(item.state);
+        this._updateSwitches();
+    }));
+    this.menu.addMenuItem(this._repeat);
 
 	    
 	switch (SETTING_APP){
-           case "1":
+      case "1":
 		DEFAULT_APP = 'banshee';
 		PLAYER_DEFAULT = "org.mpris.MediaPlayer2.banshee";
 	   break;
-           case "2": 
+      case "2": 
 		DEFAULT_APP = 'rhythmbox';
 		PLAYER_DEFAULT = "org.mpris.MediaPlayer2.rhythmbox";
 	   break;
-           case "3": 
+      case "3": 
 		DEFAULT_APP = 'clementine';
 		PLAYER_DEFAULT = "org.mpris.MediaPlayer2.clementine";
 	   break;
-           case "4": 
+      case "4": 
 		DEFAULT_APP = 'quodlibet';
 		PLAYER_DEFAULT ="org.mpris.MediaPlayer2.quodlibet";
 	   break;
-           case "5": 
+      case "5": 
 		DEFAULT_APP = 'audacious';
 		PLAYER_DEFAULT ="org.mpris.MediaPlayer2.audacious";
 	   break;
-           case "6": 
+      case "6": 
 		DEFAULT_APP = 'guayadeque';
 		PLAYER_DEFAULT ="org.mpris.MediaPlayer2.guayadeque";
 	   break;
-           case "7": 
+      case "7": 
 		DEFAULT_APP = 'gmpc';
 		PLAYER_DEFAULT ="org.mpris.MediaPlayer2.mpd";
 	   break;
 	}
 	
 	this._mediaServer = new MediaServer2Player();
-        this._prop = new Prop();
-		
-        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+    this._prop = new Prop();
+	
+    this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-        item = new PopupMenu.PopupMenuItem(_("MediasPlayers Settings ..."));
-        item.connect('activate', OpenSettings);
-        this.menu.addMenuItem(item);
-	    
-	    
-	    this._updateMetadata();
-	    this._updateSwitches();
-	    this._updateVolume();
-	    
-	    this._prop.connect('PropertiesChanged', Lang.bind(this, function(arg) {
-		    	this._updateMetadata();
-	            this._updateSwitches();
-	            this._updateVolume();
-	        }));
+    item = new PopupMenu.PopupMenuItem(_("MediasPlayers Settings ..."));
+    item.connect('activate', Lang.bind(this, function(item) {
+    	this._loadApp('mediasplayers-settings');
+	}));
+    this.menu.addMenuItem(item);
+    
+    
+    this._updateMetadata();
+    this._updateSwitches();
+    this._updatePlayPause();
+    this._updateVolume();
+    
+    this._prop.connect('PropertiesChanged', Lang.bind(this, function(arg) {
+    	this._updateMetadata();
+        this._updateSwitches();
+        this._updatePlayPause();
+        this._updateVolume();
+        }));
 	
-	    },
+	 },
 	  
-	    _appPlayer: function(str) {
-	        PLAYER_DEFAULT = str;
-	        this._mediaServer = new MediaServer2Player();
-	        this._prop = new Prop();
-	    },
-	
-	    _loadPlayer: function() {
-	        Main.overview.hide();
-	        Util.spawn([DEFAULT_APP]);
-	    },
-	    
-	    _createcover: function (pathToC) {
-	    	let coverA = new Clutter.Texture({
-	        	keep_aspect_ratio: true,
-	        	width: 150,
-	        	filename: pathToC});
-	    	this._songCover.set_child(coverA);
-	    },
-	    
-	    _updateMetadata: function() {
-	        this._mediaServer.getMetadata(Lang.bind(this,
-	            function(sender, metadata) {
-		        	if (DEFAULT_APP!="banshee-media-player.desktop") COVER_PATH=unescape(metadata["xesam:url"].substring(7,metadata["xesam:url"].lastIndexOf('/')))+ "/cover.jpg";
-	        		else COVER_PATH=metadata["mpris:artUrl"].substr(7,metadata["mpris:artUrl"].lenght);
-					this._artist.text = metadata["xesam:artist"].toString() + ' - ' + metadata["xesam:title"].toString();
-					this._album.text = metadata["xesam:album"].toString();
-					this._createcover(COVER_PATH);
-	        	}));
-	    },
-	    
-	    _updateSwitches: function() {
-	        this._mediaServer.getShuffle(Lang.bind(this,
-	            function(sender, shuffle) {
-	                this._shuffle.setToggleState(shuffle);
-	            }
-	        ));
-	        this._mediaServer.getRepeat(Lang.bind(this,
-	            function(sender, repeat) {
-	                this._repeat.setToggleState(repeat);
-	            }
-	        ));
-	    },
-	    
-	    _updateVolume: function() {
-	        this._mediaServer.getVolume(Lang.bind(this,
-	        function(sender, volume) {
-	            global.log(this._volume_text);
-	        this._volume_text.setIcon = "audio-volume-low";
-	            if (volume > 0.30) {
-	            this._volume_text.setIcon = "audio-volume-medium";
-	        }
-	            if (volume > 0.70) {
-	            this._volume_text.setIcon = "audio-volume-high";
-	        }
-	            this._volume.setValue(volume);
-	        }
-	    ));
+    _appPlayer: function(str) {
+        PLAYER_DEFAULT = str;
+        this._mediaServer = new MediaServer2Player();
+        this._prop = new Prop();
+    },
+
+    _loadApp: function(app) {
+        Main.overview.hide();
+        Util.spawn([app]);
+    },
+    
+    _createcover: function (pathToC) {
+    	let coverA = new Clutter.Texture({
+        	keep_aspect_ratio: true,
+        	width: 150,
+        	filename: pathToC});
+    	this._songCover.set_child(coverA);
+    },
+    
+    _updatePlayPause: function() {
+        this._mediaServer.getPlaybackStatus(Lang.bind(this,
+            function(sender, status) {
+                if (status == "Playing")
+                    this._mediaPlay.set_child(this._mediaPauseI);
+                else if (status == "Paused" || status == "Stopped")
+                    this._mediaPlay.set_child(this._mediaPlayI);
+            }
+        ));
+    },
+    
+    _updateMetadata: function() {
+        this._mediaServer.getMetadata(Lang.bind(this,
+            function(sender, metadata) {
+	        	if (DEFAULT_APP!="banshee-media-player.desktop") COVER_PATH=unescape(metadata["xesam:url"].substring(7,metadata["xesam:url"].lastIndexOf('/')))+ "/cover.jpg";
+        		else COVER_PATH=metadata["mpris:artUrl"].substr(7,metadata["mpris:artUrl"].lenght);
+				this._artist.text = metadata["xesam:artist"].toString() + ' - ' + metadata["xesam:title"].toString();
+				this._album.text = metadata["xesam:album"].toString();
+				this._createcover(COVER_PATH);
+        	}));
+    },
+    
+    _updateSwitches: function() {
+        this._mediaServer.getShuffle(Lang.bind(this,
+            function(sender, shuffle) {
+                this._shuffle.setToggleState(shuffle);
+            }
+        ));
+        this._mediaServer.getRepeat(Lang.bind(this,
+            function(sender, repeat) {
+                this._repeat.setToggleState(repeat);
+            }
+        ));
+    },
+    
+    _updateVolume: function() {
+        this._mediaServer.getVolume(Lang.bind(this,
+        function(sender, volume) {
+            global.log(this._volume_text);
+        this._volume_text.setIcon = "audio-volume-low";
+            if (volume > 0.30) {
+            this._volume_text.setIcon = "audio-volume-medium";
+        }
+            if (volume > 0.70) {
+            this._volume_text.setIcon = "audio-volume-high";
+        }
+            this._volume.setValue(volume);
+        }
+    ));
     }
 };
 
